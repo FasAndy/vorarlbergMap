@@ -4,109 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vorarlberg Map</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        /* General styles */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        #map-container svg path {
+            fill: lightpink; /* Default color */
+            stroke: #fff;
+            stroke-width: 1px;
+            cursor: pointer;
         }
 
-        header {
+        #map-container svg path.highlighted {
+            fill: blue; /* Highlighted color */
+        }
+
+        #map-container {
             width: 100%;
-            padding: 1em;
-            background-color: #007bff;
-            color: white;
-            text-align: center;
-        }
-
-        #map {
-            width: 100%;
-            height: 70vh; /* Optimize for iPhone screen */
-            margin-top: 10px;
-        }
-
-        select {
-            margin: 10px auto;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        @media (max-width: 768px) {
-            #map {
-                height: 80vh;
-            }
+            max-width: 600px; /* Optional: adjust for smaller devices */
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Vorarlberg Map</h1>
-        <p>Select a municipal to view it on the map</p>
-    </header>
-
+    <h1>Select a Municipal</h1>
     <select id="municipalSelect">
-        <option value="">-- Select a Municipal --</option>
-        <!-- Dynamic options will be added here -->
+        <option value="">-- Select --</option>
+        <option value="Bregenz">Bregenz</option>
+        <option value="Dornbirn">Dornbirn</option>
+        <!-- Add all other municipalities here -->
     </select>
 
-    <div id="map"></div>
+    <div id="map-container">
+        <!-- Paste the entire SVG content here -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+            <!-- Example SVG paths -->
+            <path id="Bregenz" d="..." />
+            <path id="Dornbirn" d="..." />
+            <!-- More paths from the SVG -->
+        </svg>
+    </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Map initialization
-        const map = L.map('map').setView([47.3165, 9.6868], 10); // Coordinates for Vorarlberg
-
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-        }).addTo(map);
-
-        // Municipalities of Vorarlberg (replace with actual GeoJSON data or polygon coordinates)
-        const municipalities = {
-            "Bregenz": { "coords": [47.5031, 9.7471] },
-            "Dornbirn": { "coords": [47.4126, 9.7414] },
-            "Feldkirch": { "coords": [47.2446, 9.5982] },
-            "Bludenz": { "coords": [47.1545, 9.8104] }
-            // Add all 96 municipalities
-        };
-
-        // Populate dropdown
         const municipalSelect = document.getElementById('municipalSelect');
-        for (const [name] of Object.entries(municipalities)) {
-            const option = document.createElement('option');
-            option.value = name;
-            option.textContent = name;
-            municipalSelect.appendChild(option);
-        }
+        const svgPaths = document.querySelectorAll('#map-container svg path');
 
-        // Highlight selected municipal
-        let currentMarker;
         municipalSelect.addEventListener('change', (event) => {
             const selectedMunicipal = event.target.value;
 
-            if (currentMarker) {
-                map.removeLayer(currentMarker);
-            }
+            // Reset all paths
+            svgPaths.forEach(path => path.classList.remove('highlighted'));
 
+            // Highlight the selected municipal
             if (selectedMunicipal) {
-                const { coords } = municipalities[selectedMunicipal];
-                currentMarker = L.circle(coords, {
-                    color: 'blue',
-                    fillColor: '#007bff',
-                    fillOpacity: 0.5,
-                    radius: 5000
-                }).addTo(map);
-
-                map.setView(coords, 12);
+                const selectedPath = document.getElementById(selectedMunicipal);
+                if (selectedPath) {
+                    selectedPath.classList.add('highlighted');
+                }
             }
         });
     </script>
