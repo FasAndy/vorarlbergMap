@@ -5,59 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vorarlberg Map</title>
     <style>
-        #map-container svg path {
-            fill: lightpink; /* Default color */
-            stroke: #fff;
-            stroke-width: 1px;
-            cursor: pointer;
-        }
-
-        #map-container svg path.highlighted {
-            fill: blue; /* Highlighted color */
-        }
-
+        /* Responsive styles for the map */
         #map-container {
             width: 100%;
-            max-width: 600px; /* Optional: adjust for smaller devices */
+            max-width: 600px; /* Adjust max-width as needed */
             margin: 0 auto;
+        }
+
+        #map-container svg {
+            width: 100%; /* Make the SVG responsive */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Remove extra spacing below inline SVGs */
+        }
+
+        @media (max-width: 768px) {
+            #map-container {
+                max-width: 100%; /* Allow map to take full width on small screens */
+            }
+        }
+
+        /* Additional styles (optional) */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        select {
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
-    <h1>Select a Municipal</h1>
-    <select id="municipalSelect">
-        <option value="">-- Select --</option>
-        <option value="Bregenz">Bregenz</option>
-        <option value="Dornbirn">Dornbirn</option>
-        <!-- Add all other municipalities here -->
+    <h1>Vorarlberg Map</h1>
+    <p>Select a municipal to highlight it on the map:</p>
+    <select id="municipal-select">
+        <option value="" disabled selected>Select a municipal</option>
+        <option value="Ludesch">Ludesch</option>
+        <option value="Frastanz">Frastanz</option>
+        <!-- Add more options here for the other 94 municipals -->
     </select>
-
     <div id="map-container">
-        <!-- Paste the entire SVG content here -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
-            <!-- Example SVG paths -->
-            <path id="Bregenz" d="..." />
-            <path id="Dornbirn" d="..." />
-            <!-- More paths from the SVG -->
+            <!-- Your SVG content goes here -->
+            <path id="Ludesch" d="M332 854.1 c1.9 -1.7 4.1 -3.1 4.8 -3.1 0.7 0 1.7 -1.1 2.2 -2.4 0.8 -2.2 8.9 -7.6 11.4 -7.6 0.6 0 2.4 -0.7 3.9 -1.5 1.9 -0.9 3.5 -1.2 4.5 -0.6 3.2 1.7 8.3 0.1 10.3 -3.3 1.1 -1.8 1.9 -2.4 1.9 -1.5 0 0.9 -1.1 2.8 -2.5 4.3 -2.6 2.8 -8.1 3.6 -10.3 1.4 -0.8 -0.8 -1.2 -0.8 -1.2 -0.1 0 0.6 -2.1 1.6 -4.6 2.2 -7.2 1.8 -12.4 4.8 -12.4 7.2 0 1.1 -0.8 2.3 -1.7 2.6 -1 0.4 -3.6 1.7 -5.8 3 l-4 2.4 3.5 -3z"/>
+            <path id="Frastanz" d="M415 923.6 c0 -0.2 0.6 -1.6 1.4 -3 0.8 -1.7 1.5 -2.2 1.8 -1.4 0.3 0.7 -0.4 2.1 -1.4 3.1 -1 0.9 -1.8 1.5 -1.8 1.3z"/>
+            <!-- Add paths for all other municipals -->
         </svg>
     </div>
 
     <script>
-        const municipalSelect = document.getElementById('municipalSelect');
-        const svgPaths = document.querySelectorAll('#map-container svg path');
+        // JavaScript to highlight selected municipal
+        const selectElement = document.getElementById('municipal-select');
+        const svgPaths = document.querySelectorAll('svg path');
 
-        municipalSelect.addEventListener('change', (event) => {
-            const selectedMunicipal = event.target.value;
+        selectElement.addEventListener('change', (event) => {
+            const selectedValue = event.target.value;
 
-            // Reset all paths
-            svgPaths.forEach(path => path.classList.remove('highlighted'));
+            // Reset all paths to the default fill color
+            svgPaths.forEach(path => {
+                path.setAttribute('fill', '#ddd');
+            });
 
             // Highlight the selected municipal
-            if (selectedMunicipal) {
-                const selectedPath = document.getElementById(selectedMunicipal);
-                if (selectedPath) {
-                    selectedPath.classList.add('highlighted');
-                }
+            const selectedPath = document.getElementById(selectedValue);
+            if (selectedPath) {
+                selectedPath.setAttribute('fill', '#ff0000'); // Highlight color
             }
         });
     </script>
