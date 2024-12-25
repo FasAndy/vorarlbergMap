@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vorarlberg Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            padding: 1em;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+        }
+
+        #map {
+            width: 100%;
+            height: 70vh; /* Optimize for iPhone screen */
+            margin-top: 10px;
+        }
+
+        select {
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        @media (max-width: 768px) {
+            #map {
+                height: 80vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Vorarlberg Map</h1>
+        <p>Select a municipal to view it on the map</p>
+    </header>
+
+    <select id="municipalSelect">
+        <option value="">-- Select a Municipal --</option>
+        <!-- Dynamic options will be added here -->
+    </select>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Map initialization
+        const map = L.map('map').setView([47.3165, 9.6868], 10); // Coordinates for Vorarlberg
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Municipalities of Vorarlberg (replace with actual GeoJSON data or polygon coordinates)
+        const municipalities = {
+            "Bregenz": { "coords": [47.5031, 9.7471] },
+            "Dornbirn": { "coords": [47.4126, 9.7414] },
+            "Feldkirch": { "coords": [47.2446, 9.5982] },
+            "Bludenz": { "coords": [47.1545, 9.8104] }
+            // Add all 96 municipalities
+        };
+
+        // Populate dropdown
+        const municipalSelect = document.getElementById('municipalSelect');
+        for (const [name] of Object.entries(municipalities)) {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            municipalSelect.appendChild(option);
+        }
+
+        // Highlight selected municipal
+        let currentMarker;
+        municipalSelect.addEventListener('change', (event) => {
+            const selectedMunicipal = event.target.value;
+
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+            }
+
+            if (selectedMunicipal) {
+                const { coords } = municipalities[selectedMunicipal];
+                currentMarker = L.circle(coords, {
+                    color: 'blue',
+                    fillColor: '#007bff',
+                    fillOpacity: 0.5,
+                    radius: 5000
+                }).addTo(map);
+
+                map.setView(coords, 12);
+            }
+        });
+    </script>
+</body>
+</html>
